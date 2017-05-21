@@ -72,7 +72,7 @@ function stop() {
 		style="width:70%; margin:0 auto; margin-top:5px; ">
 		<p:panel id="panelComentarios" header="Comentários"
 			style="padding:0px">
-			<ui:repeat var="comment" value="#{arquivoBean.arquivo.comentarios}">
+			<ui:repeat var="comment" value="#{arquivoBean.arquivo.comentarios}" >
 				<h:panelGrid columns="2" cellpadding="10">
 					<p:graphicImage value="#{imageBean.imgConta}" id="grImage">
 						<f:param name="parCodigo" value="#{comment.usuario.codigo}" />
@@ -101,7 +101,6 @@ function stop() {
 
 		<h:form id="frmRating">
 			<p:panelGrid columns="2" id="telaRating">
-				<p:outputLabel value="Seu login(placeholder): " />
 				<p:outputLabel value="Avaliação: " />
 				<p:selectOneMenu filter="false"
 					value="#{ratingArquivoBean.rating.rating}">

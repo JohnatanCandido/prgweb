@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -21,13 +22,12 @@ import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 
 import br.com.john.prgweb.dao.ArquivoDao;
-import br.com.john.prgweb.dao.UsuarioDao;
 import br.com.john.prgweb.domain.Arquivo;
 import br.com.john.prgweb.domain.Usuario;
 
 @SuppressWarnings("serial")
 @ManagedBean
-@ViewScoped 	// estou usando SessionScoped para que quando mudar da tela
+@SessionScoped 	// estou usando SessionScoped para que quando mudar da tela
 				// principal para a tela de busca a variavel "filtro" não seja
 				// resetada!
 public class ArquivoBean implements Serializable {
@@ -44,8 +44,10 @@ public class ArquivoBean implements Serializable {
 
 	public void novo() {// MUDAR
 		this.arquivo = new Arquivo();
+		this.arquivo.setDownloads(0);
+		this.arquivo.setRating_arquivo(0.0);
+		this.arquivo.setTamanho(0.0);
 		limpaFiltros();
-		carregaUsuarios();
 		listar();
 	}
 
@@ -83,8 +85,10 @@ public class ArquivoBean implements Serializable {
 
 	public ArquivoBean() {
 		this.arquivo = new Arquivo();
+		this.arquivo.setDownloads(0);
+		this.arquivo.setRating_arquivo(0.0);
+		this.arquivo.setTamanho(0.0);
 		limpaFiltros();
-		carregaUsuarios();
 		listar();
 	}
 
@@ -113,10 +117,8 @@ public class ArquivoBean implements Serializable {
 	}
 
 	public void alterar(ActionEvent evento) {
-		arquivo = (Arquivo) evento.getComponent().getAttributes().get("xxxxxxxxxxxxxxxx");
-		arquivo.setCaminhoArquivo("C:/Users/Usuário/Desktop/Trabalhos/Uploads/Arquivos/"+arquivo.getCodigo());
-		carregaUsuarios();
-
+		arquivo = (Arquivo) evento.getComponent().getAttributes().get("arquivoAlterarar");
+		arquivo.setCaminhoArquivo(arquivo.getCaminhoArquivo());
 	}
 
 	public void salvar() {
@@ -130,9 +132,6 @@ public class ArquivoBean implements Serializable {
 			if(arquivo.getDescricao().equals(null) || arquivo.getDescricao().equals("") || arquivo.getDescricao().equals(" ")){
 				throw new ArrayIndexOutOfBoundsException("O campo Descrição é obrigatório!");
 			}
-			this.arquivo.setDownloads(0);
-			this.arquivo.setRating_arquivo(0.0);
-			this.arquivo.setTamanho(0.0);
 			LoginBean lb = new LoginBean();
 			this.arquivo.setUsuario_upload(lb.getUsuario());
 			ArquivoDao dao = new ArquivoDao();
@@ -191,7 +190,7 @@ public class ArquivoBean implements Serializable {
 
 	public List<Arquivo> meusUploads(){
 		LoginBean lb = new LoginBean();
-		if(lb.isLogged()){		
+		if(lb.isLogged()){
 			List<Arquivo> meusUploads = new ArrayList<Arquivo>();
 			for(Arquivo arq: arquivos){
 				if(arq.getUsuario_upload().getLogin().equals(lb.getUsuario().getLogin())){
@@ -203,14 +202,6 @@ public class ArquivoBean implements Serializable {
 		return null;
 	}
 	
-	private void carregaUsuarios() {
-		try {
-			UsuarioDao dao = new UsuarioDao();
-			usuarios = dao.listarTodos();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 	// GETTERS E SETTERS
 	public Arquivo getArquivo() {

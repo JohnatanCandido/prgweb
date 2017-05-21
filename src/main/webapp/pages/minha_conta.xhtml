@@ -25,20 +25,19 @@
 	<h:form id="frmMinhaConta"
 		style="width:70%; margin-left:15%; margin-right:15%; margin-top:15px">
 		<p:tabView id="tabsConta">
-			<p:tab title="Minha Conta" id="minhaConta">
-				<h:panelGrid columns="1">
-					<p:graphicImage value="#{imageBean.imgConta}" id="grImage">
-						<f:param name="parCodigo" value="0" />
-					</p:graphicImage>
-					<p:outputLabel value="#{loginBean.usuario.nick}"/>
-					<p:outputLabel value="Aqui vão os dados da conta" />
-					<p:outputLabel value="TO DO: " />
-					<p:outputLabel value="- Tabela com os dados da conta" />
-					<p:outputLabel value="- Aba para alterar dados" />
-					<p:outputLabel
-						value="- Criar uma 3ª aba listando todos os arquivo avaliados e qual o rating dado pelo usuario" />
+			<!-- TAB MINHA CONTA -->
+			<p:tab title="Minha Conta" id="minhaConta" >
+				<p:graphicImage value="#{imageBean.imgConta}" id="grImage">
+					<f:param name="parCodigo" value="#{loginBean.usuario.codigo}" />
+				</p:graphicImage>
+				<h:panelGrid columns="1" >
+					<h:outputText value="Login: #{loginBean.usuario.login}" />
+					<h:outputText value="Nick: #{loginBean.usuario.nick}"/>
+					<h:outputText value="E-mail: #{loginBean.usuario.email}" />
 				</h:panelGrid>
 			</p:tab>
+			
+			<!-- TAB MEUS UPLOADS -->
 			<p:tab title="Meus Uploads" id="meusUploads">
 				<p:dataTable emptyMessage="Você não fez nenhum upload."
 					value="#{arquivoBean.meusUploads()}" var="arq" id="table">
@@ -61,6 +60,15 @@
 						style="width:70px">
 						<h:outputText value="#{arq.rating_arquivo}" />
 					</p:column>
+					<p:column headerText="Ações">
+						<p:commandButton icon="ui-icon-trash" actionListener="#{arquivoBean.excluir}" update=":msg :frmMinhaConta:table">
+							<p:confirm header="Confirmação" message="Deseja excluir este Arquivo?(Esta ação é irreversível!)" icon="ui-icon-alert"/>
+							<f:attribute name="arquivoExcluir" value="#{arq}"/>
+						</p:commandButton>
+						<p:commandButton icon="ui-icon-pencil" 	oncomplete="PF('formUp').show();" actionListener="#{arquivoBean.alterar}" update=":frmUpload:telaUpload :msg" >
+							<f:attribute name="arquivoAlterarar" value="#{arq}" />
+						</p:commandButton>
+					</p:column>
 				</p:dataTable>
 
 				<p:commandButton style="margin-top:5px; margin-left:85%"
@@ -71,6 +79,7 @@
 
 	</h:form>
 
+	<!-- TELA DE UPLOAD DE ARQUIVO -->
 	<p:dialog header="Upload de arquivo" widgetVar="formUp" resizable="false"
 		draggable="false" modal="true" closable="true">
 
@@ -79,8 +88,6 @@
 				<p:outputLabel value="Nome do arquivo" />
 				<p:inputText style="margin-left:5px; width:400px" size="20"
 					maxlength="30" value="#{arquivoBean.arquivo.nome}" />
-
-				<p:outputLabel value="Uploader" />
 
 			</h:panelGrid>
 			<h:panelGrid columns="2">
