@@ -1,0 +1,54 @@
+  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+             "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml"
+  		xmlns:h="http://xmlns.jcp.org/jsf/html"
+  		xmlns:p="http://primefaces.org/ui"
+		xmlns:f="http://xmlns.jcp.org/jsf/core">
+<body>
+	<p:menubar>
+        <p:menuitem style="margin-left:50px" value="HOME" url="/pages/index.xhtml" />
+        <p:menuitem>
+        	<p:inputText style="margin-left:50px; margin-right: 10px; width: 500px" 
+        				placeholder="Search"
+        				value="#{arquivoBean.filtro}"/>
+        	<p:commandButton value="Buscar" ajax="false" action="busca" actionListener="#{arquivoBean.listar}" />
+        </p:menuitem>
+        <f:facet name="options">
+				<p:commandButton style="margin-right: 10px" ajax="false" value="Criar Conta" action="/pages/criar_conta" rendered="#{loginBean.logged eq false}"/>
+				<p:commandButton style="margin-right: 50px" value="Entrar" onclick="PF('dlg').show();" rendered="#{loginBean.logged eq false}"/>
+				<p:commandButton style="margin-right: 10px" ajax="false" value="Minha Conta" action="/pages/minha_conta" rendered="#{loginBean.logged}"/>
+				<p:commandButton style="margin-right: 50px" ajax="false" value="Sair" actionListener="#{loginBean.sair()}" rendered="#{loginBean.logged}" action="/pages/index.xhtml"/>
+        </f:facet>
+	</p:menubar>
+	<h:form>
+    <p:growl id="growl" sticky="true" showDetail="true" life="3000" />
+ 
+    	<p:dialog header="Login" widgetVar="dlg" resizable="false">
+        	<h:panelGrid columns="2" cellpadding="5">
+            	<h:outputLabel for="username" value="Login:" />
+            	<p:inputText id="username" value="#{loginBean.username}" label="username" />
+ 
+            	<h:outputLabel for="password" value="Senha:" />
+            	<p:password id="password" value="#{loginBean.password}"  label="password" />
+ 
+            	<f:facet name="footer">
+                	<p:commandButton value="Entrar" update="growl" actionListener="#{loginBean.envia()}" ajax="false"
+                                	 oncomplete="handleLoginRequest(xhr, status, args)" />
+            	</f:facet>  
+        	</h:panelGrid>
+    	</p:dialog>
+	</h:form>
+ 
+	<script type="text/javascript">
+	    function handleLoginRequest(xhr, status, args) {
+	        if(args.validationFailed || !args.loggedIn) {
+	            PF('dlg').jq.effect("shake", {times:5}, 100);
+	        }
+	        else {
+	            PF('dlg').hide();
+	           	$('#loginLink').fadeOut();
+	        }
+	    }
+	</script>
+</body>
+</html>

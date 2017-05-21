@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- 
+	 TO DO 
+	- MOSTRAR OS DADOS DA CONTA (LOGIN, NICK, EMAIL, NÚMERO DE UPLOADS E TOTAL DE DOWNLOADS)
+	- OPÇÃO PARA MUDAR OS DADOS E A SENHA
+	- FILTRAR UPLOADS PELO USUARIO
+ -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Minha Conta</title>
+</h:head>
+<h:body>
+	<p:growl id="msg" />
+	<h:form id="cabecalho">
+		<ui:include src="/WEB-INF/template/header.xhtml" />
+	</h:form>
+	<h:form id="frmMinhaConta"
+		style="width:70%; margin-left:15%; margin-right:15%; margin-top:15px">
+		<p:tabView id="tabsConta">
+			<p:tab title="Minha Conta" id="minhaConta">
+				<h:panelGrid columns="1">
+					<p:graphicImage value="#{imageBean.imgConta}" id="grImage">
+						<f:param name="parCodigo" value="0" />
+					</p:graphicImage>
+					<p:outputLabel value="#{loginBean.usuario.nick}"/>
+					<p:outputLabel value="Aqui vão os dados da conta" />
+					<p:outputLabel value="TO DO: " />
+					<p:outputLabel value="- Tabela com os dados da conta" />
+					<p:outputLabel value="- Aba para alterar dados" />
+					<p:outputLabel
+						value="- Criar uma 3ª aba listando todos os arquivo avaliados e qual o rating dado pelo usuario" />
+				</h:panelGrid>
+			</p:tab>
+			<p:tab title="Meus Uploads" id="meusUploads">
+				<p:dataTable emptyMessage="Você não fez nenhum upload."
+					value="#{arquivoBean.meusUploads()}" var="arq" id="table">
+					<p:column headerText="Nome" sortBy="#{arq.nome}">
+						<h:commandLink action="arquivo" style="text-decoration:none">
+							<h:outputText value="#{arq.nome}" />
+							<f:setPropertyActionListener value="#{arq}"
+								target="#{arquivoBean.arquivo}" />
+						</h:commandLink>
+					</p:column>
+					<p:column headerText="Tipo" sortBy="#{arq.tipo}"
+						style="width:100px">
+						<h:outputText value="#{arq.tipo}" />
+					</p:column>
+					<p:column headerText="Downloads" sortBy="#{arq.downloads}"
+						style="width:110px">
+						<h:outputText value="#{arq.downloads}" />
+					</p:column>
+					<p:column headerText="Rating" sortBy="#{arq.rating_arquivo}"
+						style="width:70px">
+						<h:outputText value="#{arq.rating_arquivo}" />
+					</p:column>
+				</p:dataTable>
+
+				<p:commandButton style="margin-top:5px; margin-left:85%"
+					value="Novo upload" actionListener="#{arquivoBean.novo}"
+					oncomplete="PF('formUp').show();" update=":frmUpload:telaUpload" />
+			</p:tab>
+		</p:tabView>
+
+	</h:form>
+
+	<p:dialog header="Upload de arquivo" widgetVar="formUp" resizable="false"
+		draggable="false" modal="true" closable="true">
+
+		<h:form id="frmUpload" enctype="multipart/form-data">
+			<h:panelGrid columns="2" id="telaUpload">
+				<p:outputLabel value="Nome do arquivo" />
+				<p:inputText style="margin-left:5px; width:400px" size="20"
+					maxlength="30" value="#{arquivoBean.arquivo.nome}" />
+
+				<p:outputLabel value="Uploader" />
+
+			</h:panelGrid>
+			<h:panelGrid columns="2">
+				<p:outputLabel value="Tipo" />
+				<p:selectOneMenu filter="false" value="#{arquivoBean.arquivo.tipo}">
+					<f:selectItem itemLabel="Selecione o tipo" itemValue="nulo"
+						noSelectionOption="true" />
+					<f:selectItem itemLabel="Filmes" itemValue="Filmes" />
+					<f:selectItem itemLabel="Músicas" itemValue="Músicas" />
+					<f:selectItem itemLabel="Jogos" itemValue="Jogos" />
+					<f:selectItem itemLabel="Livros" itemValue="Livros" />
+					<f:selectItem itemLabel="Softwares" itemValue="Softwares" />
+				</p:selectOneMenu>
+
+			</h:panelGrid>
+			<h:panelGrid columns="1">
+				<p:outputLabel value="Descrição" />
+				<p:inputTextarea maxlength="5000" counter="display"
+					counterTemplate="{0} characters remaining."
+					value="#{arquivoBean.arquivo.descricao}" autoResize="false"
+					rows="10" cols="65" />
+				<h:outputText value="" />
+				<h:outputText id="display" />
+			</h:panelGrid>
+			<h:panelGrid columns="2">
+				<p:outputLabel value="Arquivos:" />
+				<p:outputLabel value="" />
+				<p:fileUpload mode="advanced" skinSimple="false" id="fileUp"
+					fileUploadListener="#{arquivoBean.upload}" />
+				<p:commandButton value="Salvar"
+					actionListener="#{arquivoBean.salvar}" />
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+</h:body>
+</html>

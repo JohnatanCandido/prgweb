@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	
+	<h:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>Teste Busca</title>
+		<!-- <link rel="stylesheet" type="text/css" href="estilo_estado.css" />  -->
+	</h:head>
+	<h:body>
+	<p:growl id="msg"/>
+		<h:form id="cabecalho">
+			<ui:include src="/WEB-INF/template/header.xhtml" />
+		</h:form>
+		<h:form id="frmTab" style="margin-top:25px; width:70%; margin-left:15%; margin-right:15%">
+			<p:panel styleClass="tabela">
+				<p:dataTable emptyMessage="Nenhum arquivo encontrado" value="#{arquivoBean.arquivos}" var="arq" id="table">
+					<p:column headerText="Nome" sortBy="#{arq.nome}">
+						<h:commandLink action="arquivo.xhtml" style="text-decoration:none">
+							<h:outputText value="#{arq.nome}" />
+							<f:setPropertyActionListener value="#{arq}" target="#{arquivoBean.arquivo}" />
+						</h:commandLink>
+					</p:column>
+					<p:column headerText="Tipo" sortBy="#{arq.tipo}" style="width:100px">
+						<h:outputText value="#{arq.tipo}"/>
+					</p:column>
+					<p:column headerText="Uploader" sortBy="#{arq.usuario_upload}" style="width:150px">
+						<h:outputText value="#{arq.usuario_upload.nick}"/>
+					</p:column>
+					<p:column headerText="Downloads" sortBy="#{arq.downloads}" style="width:110px">
+						<h:outputText value="#{arq.downloads}"/>
+					</p:column>
+					<p:column headerText="Rating" sortBy="#{arq.rating_arquivo}" style="width:70px">
+						<h:outputText value="#{arq.rating_arquivo}"/>
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+		</h:form>
+	</h:body>
+</html>

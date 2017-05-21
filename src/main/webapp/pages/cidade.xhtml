@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+	<h:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>Teste Cidades</title>
+		<!-- <link rel="stylesheet" type="text/css" href="estilo_estado.css" />  -->
+	</h:head>
+	<h:body>
+	<p:growl id="msg"/>
+		<h:form id="frmTab">
+			<p:panel header="Cidades" styleClass="tabela" style="horizontal-align: center">
+				<p:dataTable emptyMessage="Sem registros" paginator="true" value="#{cidadeBean.cidades}" var="cidade" id="table">
+					<f:facet name="header">
+						<p:commandButton value="Cadastrar nova Cidade" actionListener="#{cidadeBean.novo}" oncomplete="PF('dlg').show();" update=":frmCad:telaCad :msg"/>
+					</f:facet>
+					<p:column headerText="Nome" sortBy="#{cidade.nome}" filterBy="#{cidade.nome}">
+						<h:outputText value="#{cidade.nome}"/>
+					</p:column>
+					<p:column headerText="UF" sortBy="#{cidade.uf.sigla}" filterBy="#{cidade.uf.sigla}">
+						<h:outputText value="#{cidade.uf.nome}"/>
+						<h:outputText value=" - "/>
+						<h:outputText value="#{cidade.uf.sigla}"/>
+					</p:column>
+					<p:column headerText="Opções">
+						<p:commandButton icon="ui-icon-trash" actionListener="#{cidadeBean.excluir}" update=":msg :frmTab:table">
+							<p:confirm header="Confirmação" message="Deseja excluir esta Cidade?" icon="ui-icon-alert"/>
+							<f:attribute name="cidadeExcluir" value="#{cidade}"/>
+						</p:commandButton>
+						<p:commandButton icon="ui-icon-pencil" 	oncomplete="PF('dlg').show();" actionListener="#{cidadeBean.alterar}" update=":frmCad:telaCad :msg" >
+							<f:attribute name="cidadeAlterar" value="#{cidade}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+				
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+		        	<p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+		        	<p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+		    	</p:confirmDialog>
+			</p:panel>
+		</h:form>
+		<p:dialog header="Cidades - Cadastro" widgetVar="dlg"
+			resizable="false" draggable="false" modal="true" closable="false">
+			<h:form id="frmCad">
+				<h:panelGrid columns="2" id="telaCad">
+					<p:outputLabel value="Nome" />
+					<p:inputText size="20" maxlength="30" value="#{cidadeBean.cidade.nome}" />
+					<p:outputLabel value="UF" />
+					<p:selectOneMenu filter="true" value="#{cidadeBean.cidade.uf}" converter="omnifaces.SelectItemsConverter">
+						<f:selectItem itemLabel="Selecione uma UF" itemValue=""/>
+						<f:selectItems value="#{cidadeBean.estados}" var="uf" itemLabel="#{uf.nome} - #{uf.sigla}" itemValue="#{uf}"/>
+					</p:selectOneMenu>
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar"
+						actionListener="#{cidadeBean.salvar}" update=":msg :frmCad:telaCad :frmTab:table" />
+					<p:commandButton value="Fechar" oncomplete="PF('dlg').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>		
+	</h:body>
+</html>

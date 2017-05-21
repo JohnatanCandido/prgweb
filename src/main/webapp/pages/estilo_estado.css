@@ -1,0 +1,12 @@
+@CHARSET "ISO-8859-1";
+<style type="text/css">
+	.coluna{
+		width: 20%;
+	}
+	.tabela{
+		width: 50%;
+		horizontal-align: center;
+		background-color: gray;
+		text-align: center;
+	}
+</style>
