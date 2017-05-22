@@ -12,7 +12,6 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import org.omnifaces.util.Messages;
@@ -103,13 +102,13 @@ public class ArquivoBean implements Serializable {
 
 	public void excluir(ActionEvent evento) {
 		try {
-			arquivo = (Arquivo) evento.getComponent().getAttributes().get("xxxxxxxxxxxxxxxxxx");
+			arquivo = (Arquivo) evento.getComponent().getAttributes().get("arquivoExcluir");
 			ArquivoDao dao = new ArquivoDao();
 			dao.excluir(arquivo);
-			//Path caminho = Paths.get("C:/Users/Usuário/Desktop/Trabalhos/Uploads/" + arquivo.getCodigo());
-			
+			Path caminho = Paths.get(arquivo.getCaminhoArquivo());
+			Files.delete(caminho);
 			Messages.addGlobalInfo(arquivo.getNome() + " excluido com sucesso");
-			// listar();
+			listar();
 		} catch (Exception exception) {
 			Messages.addGlobalInfo("Erro ao excluir");
 			exception.printStackTrace();

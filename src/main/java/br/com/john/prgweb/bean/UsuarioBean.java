@@ -1,9 +1,7 @@
 package br.com.john.prgweb.bean;
 
 import java.io.Serializable;
-import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
@@ -19,7 +17,6 @@ import br.com.john.prgweb.domain.Usuario;
 public class UsuarioBean implements Serializable{
 	
 	private Usuario usuario;
-	private List<Usuario> usuarios;
 	
 	public void novo() {
 		this.usuario = new Usuario();
@@ -35,7 +32,6 @@ public class UsuarioBean implements Serializable{
 			UsuarioDao dao = new UsuarioDao();
 			dao.excluir(usuario);
 			Messages.addGlobalInfo(usuario.getNick()+" Excluido com sucesso");
-			listar();
 		} catch (Exception exception) {
 			Messages.addGlobalInfo("Erro ao excluir");
 			exception.printStackTrace();
@@ -44,8 +40,27 @@ public class UsuarioBean implements Serializable{
 	}
 	
 	public void alterar(ActionEvent evento) {
-		usuario = (Usuario)evento.getComponent().getAttributes().get("xxxxxxxxxxxxxx");
-		
+		usuario = (Usuario)evento.getComponent().getAttributes().get("usuarioAlterar");
+		try {
+			if(usuario.getSenha_confirm().equals(usuario.getSenha())){
+				if(usuario.getNova_senha() != null && !usuario.getNova_senha().equals("") && !usuario.getNova_senha().equals(" ")){
+					usuario.setSenha(usuario.getNova_senha());
+				}
+				UsuarioDao dao = new UsuarioDao();
+				dao.merge(usuario);
+				Messages.addGlobalInfo("Dados alterados com sucesso!");
+				usuario.setNova_senha(null);
+				usuario.setSenha_confirm(null);
+				novo();
+			}else{
+				throw new NumberFormatException("Senha incorreta!");
+			}
+		} catch(NumberFormatException e){
+			Messages.addGlobalError(e.getMessage());
+		} catch (Exception e) {
+			Messages.addGlobalError("Deu ruim");
+			e.printStackTrace();
+		}
 	}
 	
 	public void salvar() {
@@ -54,14 +69,13 @@ public class UsuarioBean implements Serializable{
 			dao.Salvar(usuario);
 			Messages.addGlobalInfo("Conta cadastrada com sucesso");
 			novo();
-			listar();
 		} catch (Exception exception) {
 			Messages.addGlobalError("Erro ao cadastar esta conta");
 			exception.printStackTrace();
 		}
 	}
 	
-	@PostConstruct
+	/*@PostConstruct
 	public void listar(){
 		try {
 			UsuarioDao dao = new UsuarioDao();
@@ -70,7 +84,7 @@ public class UsuarioBean implements Serializable{
 			Messages.addGlobalError("Erro ao listar usuarios");
 			exception.printStackTrace();
 		}
-	}
+	}*/
 
 	public Usuario getUsuario() {
 		return usuario;
@@ -79,35 +93,5 @@ public class UsuarioBean implements Serializable{
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
-
-	public List<Usuario> getUsuarios() {
-		return usuarios;
-	}
-
-	public void setUsuarios(List<Usuario> usuarios) {
-		this.usuarios = usuarios;
-	}
 	
-	//COPIADO DO PRIMEFACES
-	/*public void login(ActionEvent event) {
-        RequestContext context = RequestContext.getCurrentInstance();
-        FacesMessage message = null;
-        boolean loggedIn = false;
-        
-        for(Usuario u: usuarios){
-        	if(usuario.getLogin() != null && usuario.getLogin().equals(u.getLogin()) && usuario.getSenha() != null && usuario.getSenha().equals(u.getSenha())) {
-                loggedIn = true;
-                message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Bem Vindo", usuario.getLogin());
-                break;
-            } 
-        }
-        if(!loggedIn){
-        	loggedIn = false;
-            message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Erro no Loggin", "Login ou senha incorretos");
-        }
-        FacesContext.getCurrentInstance().addMessage(null, message);
-        context.addCallbackParam("loggedIn", loggedIn);
-    } */ 
-	
-
 }

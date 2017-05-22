@@ -2,6 +2,7 @@ package br.com.john.prgweb.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 
 @SuppressWarnings("serial")
 @Entity
@@ -19,6 +20,9 @@ public class Usuario extends GenericDomain{
 	
 	@Column(length=50, nullable=false)
 	private String email;
+	
+	@Transient
+	private String nova_senha, senha_confirm;
 
 //GETTERS E SETTERS DAS COLUNAS
 	public String getNick() {
@@ -52,7 +56,23 @@ public class Usuario extends GenericDomain{
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
-	
 
+	public String getNova_senha() {
+		return nova_senha;
+	}
+
+	public void setNova_senha(String nova_senha) {
+		this.nova_senha = nova_senha;
+	}
+
+	public String getSenha_confirm() {
+		return senha_confirm;
+	}
+
+	public void setSenha_confirm(String senha_confirm) {
+		this.senha_confirm = senha_confirm;
+	}
+	
+	
+	
 }
