@@ -1,6 +1,7 @@
 package br.com.john.prgweb.bean;
 
 import javax.faces.bean.ManagedBean;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import org.omnifaces.util.Messages;
@@ -50,6 +51,15 @@ public class LoginBean {
 		}	
 	}
 	
+	public void excluirConta(){
+		usuario = getUsuario();
+		if(usuario.getLogin().equals(username) && usuario.getSenha().equals(password)){
+			UsuarioBean ub = new UsuarioBean();
+			ub.excluir(usuario);
+			sair();
+		}
+	}
+	
 	public void sair(){
 		this.usuario = null;
 		this.username = null;
@@ -58,18 +68,19 @@ public class LoginBean {
 	}
 	
 	public boolean isLogged(){
+		ExternalContext a = context.getExternalContext();
+		if(a == null){
+			return false;
+		}
 		usuario = (Usuario)context.getExternalContext().getSessionMap().get("current_user");
 		return usuario!=null;
 
 	}
 
 	public Usuario getUsuario() {
-		return (Usuario)context.getExternalContext().getSessionMap().get("current_user");
+		if(isLogged())
+			return (Usuario)context.getExternalContext().getSessionMap().get("current_user");
+		else
+			return null;
 	}
-
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
-	}
-	
-	
 }

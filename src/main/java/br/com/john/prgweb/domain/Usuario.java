@@ -9,20 +9,26 @@ import javax.persistence.Transient;
 public class Usuario extends GenericDomain{
 
 //COLUNAS DO BANCO DE DADOS
-	@Column(length=15)
+	@Column(length=15, unique=true)
 	private String nick;
 	
-	@Column(length=20, nullable=false)
+	@Column(length=20, nullable=false, unique=true)
 	private String login;
 	
 	@Column(length=20, nullable=false)
 	private String senha;
 	
-	@Column(length=50, nullable=false)
+	@Column(length=50, nullable=false, unique=true)
 	private String email;
 	
 	@Transient
 	private String nova_senha, senha_confirm;
+	
+	@Transient
+	int total_downloads = 0;
+	
+	@Transient
+	String media_rating = "-";
 
 //GETTERS E SETTERS DAS COLUNAS
 	public String getNick() {
@@ -72,7 +78,21 @@ public class Usuario extends GenericDomain{
 	public void setSenha_confirm(String senha_confirm) {
 		this.senha_confirm = senha_confirm;
 	}
-	
-	
+
+	public int getTotal_downloads() {
+		return total_downloads;
+	}
+
+	public void setTotal_downloads(int total_downloads) {
+		this.total_downloads = total_downloads;
+	}
+
+	public String getMedia_rating() {
+		return media_rating;
+	}
+
+	public void setMedia_rating(String media_rating) {
+		this.media_rating = media_rating;
+	}
 	
 }

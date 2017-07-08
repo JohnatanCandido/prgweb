@@ -8,6 +8,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
+import br.com.john.prgweb.bean.RatingArquivoBean;
+
 @SuppressWarnings("serial")
 @Entity
 public class Arquivo extends GenericDomain {
@@ -40,8 +42,20 @@ public class Arquivo extends GenericDomain {
 
 	@Column
 	private String caminhoArquivo;
+	
+	@Transient
+	private int meuRating;
 
 	// GETTERS E SETTERS DAS COLUNAS
+	public String getRating(){
+		RatingArquivoBean rab = new RatingArquivoBean();
+		double retorno = rab.listarRating(getCodigo());
+		if(retorno != 0.0){
+			return String.format("%.2f", retorno);
+		}
+		return "-";
+	}
+	
 	public String getNome() {
 		return nome;
 	}
@@ -112,6 +126,14 @@ public class Arquivo extends GenericDomain {
 
 	public void setCaminhoArquivo(String caminhoArquivo) {
 		this.caminhoArquivo = caminhoArquivo;
+	}
+
+	public int getMeuRating() {
+		return meuRating;
+	}
+
+	public void setMeuRating(int meuRating) {
+		this.meuRating = meuRating;
 	}
 
 }

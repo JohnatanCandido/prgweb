@@ -10,8 +10,10 @@ import javax.faces.event.ActionEvent;
 import org.omnifaces.util.Messages;
 
 import br.com.john.prgweb.dao.ComentarioDao;
+import br.com.john.prgweb.dao.CommentRatingDao;
 import br.com.john.prgweb.domain.Arquivo;
 import br.com.john.prgweb.domain.Comentario;
+import br.com.john.prgweb.domain.CommentRating;
 
 @SuppressWarnings("serial")
 @ManagedBean
@@ -71,6 +73,28 @@ public class ComentarioBean implements Serializable{
 			Messages.addGlobalError("Erro ao comentar");
 			exception.printStackTrace();
 		}
+	}
+	
+	public String getLikes(Comentario com){
+		CommentRatingDao crd = new CommentRatingDao();
+		List<CommentRating> comment = crd.buscaCommentRating(com);
+		int rating = 0;
+		for(CommentRating cr: comment){
+			rating += cr.getRating();
+		}
+		if(rating == 1 || rating == -1){
+			return rating+" Ponto";
+		}
+		return rating+" Pontos";
+	}
+	
+	public List<Comentario> buscaComentarios(Arquivo arquivo) {
+		ComentarioBean com = new ComentarioBean();
+		List<Comentario> comments = com.listar(arquivo.getCodigo());
+		for(Comentario comment: comments){
+			comment.setRating_comentario(getLikes(comment));
+		}
+		return comments;
 	}
 	
 	public Comentario getComentario() {

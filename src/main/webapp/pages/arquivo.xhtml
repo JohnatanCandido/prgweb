@@ -9,124 +9,116 @@
 
 <h:head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title>Teste Arquivo</title>
-	<!-- <link rel="stylesheet" type="text/css" href="estilo_estado.css" />  -->
+	<title>#{arquivoBean.arquivo.nome}</title>
 </h:head>
 <h:body>
-	<h:form id="cabecalho">
-		<ui:include src="/WEB-INF/template/header.xhtml" />
-	</h:form>
-	<h:form id="arquivoDesc"
+	<p:growl id="msg" />
+	<ui:include src="/WEB-INF/template/header.xhtml" />
+	<h:form id="frmArquivoDesc"
 		style="width:70%; margin: 0 auto; margin-top:25px;">
-		<p:panel id="arquivoDesc" style="margin-bottom:20px">
+		<p:panel id="panelArquivoDesc" style="margin-bottom:20px">
 			<h:panelGrid columns="2" cellpadding="10">
-				<p:graphicImage value="#{imageBean.imgArquivo}" id="grImage">
-					<f:param name="parCodigo" value="#{arquivoBean.arquivo.codigo}" />
+				<p:commandLink rendered="#{arquivoBean.meuArquivo}"
+					oncomplete="PF('arqImgUp').show();">
+					<p:graphicImage value="#{imageBean.imgArquivo}" id="grImageLink"
+						cache="false" width="116" height="133">
+						<f:param name="arqImgCod" value="#{arquivoBean.arquivo.codigo}" />
+					</p:graphicImage>
+				</p:commandLink>
+				<p:graphicImage value="#{imageBean.imgArquivo}" id="grImage"
+					cache="false" rendered="#{!arquivoBean.meuArquivo}" width="116"
+					height="133">
+					<f:param name="arqImgCod" value="#{arquivoBean.arquivo.codigo}" />
 				</p:graphicImage>
 				<h:outputText value="#{arquivoBean.arquivo.descricao}" />
 			</h:panelGrid>
 			<f:facet name="header">
 				<h:outputText value="#{arquivoBean.arquivo.nome}" />
-				<h:outputText value="Rating: #{arquivoBean.arquivo.rating_arquivo}" style="float:right" rendered="#{loginBean.logged eq false}"/>
 
-				<p:commandButton
-					value="Rating: #{arquivoBean.arquivo.rating_arquivo}"
-					actionListener="#{ratingArquivoBean.novo}"
-					oncomplete="PF('dlgRating').show();" update=":frmRating:telaRating"
-					style="float:right" rendered="#{loginBean.logged}"/>
+				<p:rating value="#{arquivoBean.arquivo.meuRating}"
+					rendered="#{arquivoBean.notMeuArquivo}" style="float:right">
+					<p:ajax event="rate"
+						listener="#{ratingArquivoBean.salvar(arquivoBean.arquivo, arquivoBean.arquivo.meuRating)}"
+						update=":frmArquivoDesc :msg" />
+					<p:ajax event="cancel"
+						listener="#{ratingArquivoBean.excluir(arquivoBean.arquivo)}"
+						update=":frmArquivoDesc :msg" />
+				</p:rating>
+				<h:outputText value="Avalie:" style="float:right; margin-left:10px"
+					rendered="#{arquivoBean.notMeuArquivo}" />
 			</f:facet>
 			<f:facet name="footer">
-				<h:panelGrid columns="5" width="100%">
+				<h:panelGrid columns="6" width="100%">
 					<h:outputText value="Downloads: #{arquivoBean.arquivo.downloads}" />
 					<h:outputText
 						value="Postado por: #{arquivoBean.arquivo.usuario_upload.nick}" />
-					<h:outputText value="Tamanho: #{arquivoBean.arquivo.tamanho} Mbs" />
+					<h:outputText value="Tamanho: #{arquivoBean.arquivo.tamanho} Kbs" />
 					<h:outputText value="Tipo: #{arquivoBean.arquivo.tipo}" />
+					<h:outputText value="Rating: #{arquivoBean.arquivo.rating}" />
 					<p:commandButton value="Baixar" ajax="false"
-						onclick="PrimeFaces.monitorDownload(start, stop);"
 						icon="ui-icon-arrowthick-1-s" style="float:right">
-						<p:fileDownload value="#{arquivoBean.fileDown}" />
+						<f:param name="arqCodigo" value="#{arquivoBean.arquivo.codigo}" />
+						<p:fileDownload value="#{fileDownloadView.file}" />
 					</p:commandButton>
 				</h:panelGrid>
 			</f:facet>
 		</p:panel>
 	</h:form>
 
-<script type="text/javascript">
-function start() {
-    PF('statusDialog').show();
-}
-
-function stop() {
-    PF('statusDialog').hide();
-}
-</script>
-
-	<!-- TELA DE STATUS DO DOWNLOAD -->
-	<p:dialog modal="true" widgetVar="statusDialog" header="Status"
-		draggable="false" closable="false" resizable="false">
-	</p:dialog>
-
 	<!-- TELA DE COMENTÁRIOS -->
 	<h:form id="frmComentarios"
 		style="width:70%; margin:0 auto; margin-top:5px; ">
 		<p:panel id="panelComentarios" header="Comentários"
-			style="padding:0px">
-			<ui:repeat var="comment" value="#{arquivoBean.arquivo.comentarios}" >
-				<h:panelGrid columns="2" cellpadding="10">
-					<p:graphicImage value="#{imageBean.imgConta}" id="grImage">
-						<f:param name="parCodigo" value="#{comment.usuario.codigo}" />
+			style="padding:0px; width:100%">
+			<ui:repeat var="comment"
+				value="#{comentarioBean.buscaComentarios(arquivoBean.arquivo)}">
+				<h:panelGrid columns="2" cellpadding="5">
+					<p:graphicImage value="#{imageBean.imgConta}" id="grImage"
+						height="50px" width="50px" style="margin-top:0px" cache="false">
+						<f:param name="contaImgCod" value="#{comment.usuario.codigo}" />
 					</p:graphicImage>
-					<h:outputText
-						value="#{comment.usuario.nick}: #{comment.comentario}" />
+					<h:panelGrid columns="1" width="100%">
+						<h:panelGrid columns="2">
+							<h:outputText value="#{comment.usuario.nick}:"
+								style="font-weight:bold; text-decoration:underline" />
+							<h:outputText value="#{comment.rating_comentario}"
+								style="color:#aaaaaa" />
+						</h:panelGrid>
+						<h:outputText value="#{comment.comentario}" />
+
+						<h:panelGrid columns="2"
+							rendered="#{!commentRatingBean.isMeuComment(comment)}">
+							<p:commandLink value="Like"
+								actionListener="#{commentRatingBean.salvar(comment, 1)}"
+								update="frmComentarios" style="text-decoration:none; color:#{commentRatingBean.likeDislike(comment, 1)}"/>
+							<p:commandLink value="Dislike"
+								actionListener="#{commentRatingBean.salvar(comment, -1)}"
+								update="frmComentarios" style="text-decoration:none; color:#{commentRatingBean.likeDislike(comment, -1)}"/>
+						</h:panelGrid>
+					</h:panelGrid>
 				</h:panelGrid>
 			</ui:repeat>
 			<f:facet name="footer">
-				<p:inputTextarea maxlength="1000"
-					value="#{comentarioBean.comentario.comentario}" style="width:98%"
-					rendered="#{loginBean.logged}"
-					rows="4" />
-				<p:commandButton value="Comentar" style="margin-left:87%"
-					actionListener="#{comentarioBean.salvar}"
-					update="frmComentarios:panelComentarios" rendered="#{loginBean.logged}">
-					<f:attribute name="arquivo" value="#{arquivoBean.arquivo}" />
-				</p:commandButton>
+				<h:panelGrid columns="1" width="100%">
+					<p:inputTextarea maxlength="1000"
+						value="#{comentarioBean.comentario.comentario}" style="width:99%"
+						rendered="#{loginBean.logged}" rows="4" />
+					<p:commandButton value="Comentar" style="float:right"
+						actionListener="#{comentarioBean.salvar}" update="frmComentarios"
+						rendered="#{loginBean.logged}" ajax="true">
+						<f:attribute name="arquivo" value="#{arquivoBean.arquivo}" />
+					</p:commandButton>
+				</h:panelGrid>
 			</f:facet>
 		</p:panel>
 	</h:form>
-
-	<!-- TELA DE AVALIAÇÃO DO ARQUIVO -->
-	<p:dialog header="Avaliar arquivo" widgetVar="dlgRating" resizable="false"
-		draggable="false" modal="true" closable="false">
-
-		<h:form id="frmRating">
-			<p:panelGrid columns="2" id="telaRating">
-				<p:outputLabel value="Avaliação: " />
-				<p:selectOneMenu filter="false"
-					value="#{ratingArquivoBean.rating.rating}">
-					<f:selectItem itemLabel="0" itemValue="0" />
-					<f:selectItem itemLabel="1" itemValue="1" />
-					<f:selectItem itemLabel="2" itemValue="2" />
-					<f:selectItem itemLabel="3" itemValue="3" />
-					<f:selectItem itemLabel="4" itemValue="4" />
-					<f:selectItem itemLabel="5" itemValue="5" />
-					<f:selectItem itemLabel="6" itemValue="6" />
-					<f:selectItem itemLabel="7" itemValue="7" />
-					<f:selectItem itemLabel="8" itemValue="8" />
-					<f:selectItem itemLabel="9" itemValue="9" />
-					<f:selectItem itemLabel="10" itemValue="10" />
-
-
-				</p:selectOneMenu>
-			</p:panelGrid>
-			<h:panelGrid columns="2">
-				<p:commandButton value="Salvar" ajax="false"
-					actionListener="#{ratingArquivoBean.salvar(arquivoBean.arquivo)}"
-					update=":frmRating:telaRating :arquivoDesc:arquivoDesc"
-					oncomplete="PF('dlgRating').hide();">
-				</p:commandButton>
-				<p:commandButton value="Fechar" oncomplete="PF('dlgRating').hide();" />
-			</h:panelGrid>
+	<!-- TELA UPLOAD DE IMAGEM DO ARQUIVO -->
+	<p:dialog header="Upload de imagem" widgetVar="arqImgUp"
+		resizable="false" draggable="false" modal="true" closable="true">
+		<h:form id="frmImgUp" enctype="multipart/form-data">
+			<p:fileUpload mode="advanced" skinSimple="false" id="imagemUp"
+				fileUploadListener="#{arquivoBean.uploadImg}"
+				oncomplete="PF('arqImgUp').hide();" update=":frmArquivoDesc" />
 		</h:form>
 	</p:dialog>
 </h:body>

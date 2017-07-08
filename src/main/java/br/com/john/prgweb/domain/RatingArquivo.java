@@ -19,7 +19,7 @@ public class RatingArquivo extends GenericDomain{
 	private Usuario usuario;
 	
 	@Column
-	private Double rating;//MUDAR PARA INTEGER QUANDO TIVER TEMPO
+	private int rating;//MUDAR PARA INTEGER QUANDO TIVER TEMPO
 
 	public Arquivo getArquivo() {
 		return arquivo;
@@ -37,12 +37,13 @@ public class RatingArquivo extends GenericDomain{
 		this.usuario = usuario;
 	}
 
-	public Double getRating() {
+	public int getRating() {
 		return rating;
 	}
 
-	public void setRating(Double rating) {
+	public void setRating(int rating) {
 		this.rating = rating;
 	}
+
 	
 }

@@ -25,8 +25,8 @@ public class ImageBean {
 		if(context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE){
 			return new DefaultStreamedContent();
 		}else{
-			String imageId = context.getExternalContext().getRequestParameterMap().get("parCodigo");
-			File f = new File("C:/Users/Usuário/Desktop/Trabalhos/Uploads/ImgArquivo"+imageId+".png");
+			String imageId = context.getExternalContext().getRequestParameterMap().get("arqImgCod");
+			File f = new File("C:/Users/Usuário/Desktop/Trabalhos/Uploads/ImgArquivo/"+imageId+".png");
 			if(f.isFile()){
 				Path path = Paths.get(f.getAbsolutePath());
 				InputStream stream = Files.newInputStream(path);
@@ -46,7 +46,7 @@ public class ImageBean {
 		if(context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE){
 			return new DefaultStreamedContent();
 		}else{
-			String imageId = context.getExternalContext().getRequestParameterMap().get("parCodigo");
+			String imageId = context.getExternalContext().getRequestParameterMap().get("contaImgCod");
 			File f = new File("C:/Users/Usuário/Desktop/Trabalhos/Uploads/ImgConta/"+imageId+".png");
 			if(f.isFile()){
 				Path path = Paths.get(f.getAbsolutePath());

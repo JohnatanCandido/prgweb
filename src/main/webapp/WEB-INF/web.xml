@@ -28,4 +28,25 @@
 		<servlet-name>Faces Servlet</servlet-name>
 		<url-pattern>*.xhtml</url-pattern>
 	</servlet-mapping>
+	
+	<!-- Tema Primefaces utilizado -->
+	<context-param>
+		<param-name>primefaces.THEME</param-name>
+		<param-value>ui-lightness</param-value>
+	</context-param>
+	
+	<!--  login filter -->
+	  <filter>
+	      <filter-name>LoginFilter</filter-name>
+	      <filter-class>br.com.john.prgweb.util.LoginFilter</filter-class>    
+	  </filter>
+	  <filter-mapping>
+	      <filter-name>LoginFilter</filter-name>
+	      <url-pattern>/pages/minha_conta.xhtml</url-pattern>
+	  </filter-mapping>
+	  
+	  <!-- duração da sessão -->
+	  <session-config>
+          <session-timeout>60</session-timeout>
+      </session-config>
 </web-app>

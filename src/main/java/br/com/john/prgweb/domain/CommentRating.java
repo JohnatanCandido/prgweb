@@ -18,12 +18,9 @@ public class CommentRating extends GenericDomain{
 	private Comentario comentario;
 	
 	@Column
-	private Double rating;
+	private int rating;
 
 //GETTERS E SETTERS DAS COLUNAS
-	public Double getRating() {
-		return rating;
-	}
 
 	public Usuario getUsuario() {
 		return usuario;
@@ -41,8 +38,12 @@ public class CommentRating extends GenericDomain{
 		this.comentario = comentario;
 	}
 
-	public void setRating(Double rating) {
+	public int getRating() {
+		return rating;
+	}
+
+	public void setRating(int rating) {
 		this.rating = rating;
 	}
-	
+
 }

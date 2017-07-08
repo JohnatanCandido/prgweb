@@ -8,12 +8,9 @@ import javax.faces.bean.ViewScoped;
 
 import org.omnifaces.util.Messages;
 
-import br.com.john.prgweb.dao.ArquivoDao;
 import br.com.john.prgweb.dao.RatingArquivoDao;
-import br.com.john.prgweb.dao.UsuarioDao;
 import br.com.john.prgweb.domain.Arquivo;
 import br.com.john.prgweb.domain.RatingArquivo;
-import br.com.john.prgweb.domain.Usuario;
 
 @SuppressWarnings("serial")
 @ManagedBean
@@ -22,19 +19,19 @@ public class RatingArquivoBean implements Serializable{
 	
 	private RatingArquivo rating;
 	private List<RatingArquivo> ratings;
-	private List<Arquivo> arquivos;
-	private List<Usuario> usuarios;
 	
+	public RatingArquivoBean(){
+		novo();
+	}
 	public void novo() {
 		this.rating = new RatingArquivo();
-		carregaUsuarios();
-		carregaArquivos();
 	}
 	
-	public void salvar(Arquivo arquivo) {
+	public void salvar(Arquivo arquivo, int valor) {
 		try {
 			LoginBean lb = new LoginBean();
 			RatingArquivoDao dao = new RatingArquivoDao();
+			rating.setRating(valor);
 			RatingArquivo r = dao.buscarRatingEspecifico(lb.getUsuario(), arquivo);
 			if(r != null){
 				r.setRating(rating.getRating());
@@ -44,7 +41,6 @@ public class RatingArquivoBean implements Serializable{
 				rating.setUsuario(lb.getUsuario());
 				dao.Salvar(rating);
 			}
-			Messages.addGlobalInfo("Avaliado");
 			novo();
 		} catch (Exception exception) {
 			Messages.addGlobalError("Erro ao avaliar");
@@ -52,27 +48,21 @@ public class RatingArquivoBean implements Serializable{
 		}
 	}
 	
-	/*public void excluir(ActionEvent evento){
+	public void excluir(Arquivo arquivo){
 		try {
-			rating = (RatingArquivo)evento.getComponent().getAttributes().get("xxxxxxxxxxxxxxx");
+			LoginBean lb = new LoginBean();
 			RatingArquivoDao dao = new RatingArquivoDao();
-			dao.excluir(rating);
+			RatingArquivo r = dao.buscarRatingEspecifico(lb.getUsuario(), arquivo);
+			if(r != null){
+				dao.excluir(r);
+			}
 			Messages.addGlobalInfo("Avaliação excluida");
-			listar();
 		} catch (Exception exception) {
 			Messages.addGlobalInfo("Erro ao excluir");
 			exception.printStackTrace();
 		}
 		
 	}
-	
-	
-	public void alterar(ActionEvent evento) {
-		rating = (RatingArquivo)evento.getComponent().getAttributes().get("xxxxxxxxxxxxxx");
-		carregaUsuarios();
-		carregaArquivos();
-		
-	}*/
 	
 	public double listarRating(Long codigo){
 		try {
@@ -83,7 +73,8 @@ public class RatingArquivoBean implements Serializable{
 				retorno += (double)r.getRating();
 			}
 			if(ratings.size()!=0){
-				retorno /= ratings.size();
+				retorno /= (double)ratings.size();
+				retorno *= 2;
 			}
 			return retorno;
 		} catch (Exception exception) {
@@ -91,26 +82,7 @@ public class RatingArquivoBean implements Serializable{
 			exception.printStackTrace();
 		}
 		return 0.0;
-	}
-	
-
-	private void carregaUsuarios(){
-		try {
-			UsuarioDao dao = new UsuarioDao();
-			usuarios = dao.listarTodos();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}	
-	
-	private void carregaArquivos(){
-		try {
-			ArquivoDao dao = new ArquivoDao();
-			arquivos = dao.listarTodos();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 	
 	public RatingArquivo getRating() {
 		return rating;
@@ -124,20 +96,4 @@ public class RatingArquivoBean implements Serializable{
 	public void setRatings(List<RatingArquivo> ratings) {
 		this.ratings = ratings;
 	}
-	public List<Arquivo> getArquivos() {
-		return arquivos;
-	}
-	public void setArquivos(List<Arquivo> arquivos) {
-		this.arquivos = arquivos;
-	}
-	public List<Usuario> getUsuarios() {
-		return usuarios;
-	}
-	public void setUsuarios(List<Usuario> usuarios) {
-		this.usuarios = usuarios;
-	}
-	
-	
-	
-	
 }

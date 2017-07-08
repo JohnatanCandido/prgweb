@@ -19,21 +19,30 @@
 </h:head>
 <h:body>
 	<p:growl id="msg" />
-	<h:form id="cabecalho">
-		<ui:include src="/WEB-INF/template/header.xhtml" />
-	</h:form>
+	<ui:include src="/WEB-INF/template/header.xhtml" />
 	<h:form id="frmMinhaConta"
 		style="width:70%; margin-left:15%; margin-right:15%; margin-top:15px">
 		<p:tabView id="tabsConta">
 			<!-- TAB MINHA CONTA -->
 			<p:tab title="Minha Conta" id="minhaConta">
-				<p:graphicImage value="#{imageBean.imgConta}" id="grImage">
-					<f:param name="parCodigo" value="#{loginBean.usuario.codigo}" />
-				</p:graphicImage>
-				<h:panelGrid columns="1">
-					<h:outputText value="Login: #{loginBean.usuario.login}" />
-					<h:outputText value="Nick: #{loginBean.usuario.nick}" />
-					<h:outputText value="E-mail: #{loginBean.usuario.email}" />
+				<h:panelGrid columns="2">
+					<h:panelGrid columns="1">
+						<p:commandLink oncomplete="PF('imgUp').show();">
+							<p:graphicImage value="#{imageBean.imgConta}" id="grImage"
+								width="116px" height="133px" cache="false">
+								<f:param name="contaImgCod" value="#{loginBean.usuario.codigo}" />
+							</p:graphicImage>
+						</p:commandLink>
+					</h:panelGrid>
+					<h:panelGrid columns="1">
+						<h:outputText value="Login: #{loginBean.usuario.login}" />
+						<h:outputText value="Nick: #{loginBean.usuario.nick}" />
+						<h:outputText value="E-mail: #{loginBean.usuario.email}" />
+						<h:outputText value="Total de Downloads: #{loginBean.usuario.total_downloads}" />
+						<h:outputText value="Média de Rating: #{loginBean.usuario.media_rating}" />
+					</h:panelGrid>
+					<p:commandButton value="Excluir Conta" style="margin-top:50px"
+						update=":msg" oncomplete="PF('frmExclusaoConta').show()" />
 				</h:panelGrid>
 			</p:tab>
 
@@ -56,52 +65,52 @@
 						style="width:110px">
 						<h:outputText value="#{arq.downloads}" />
 					</p:column>
-					<p:column headerText="Rating" sortBy="#{arq.rating_arquivo}"
+					<p:column headerText="Rating" sortBy="#{arq.rating}"
 						style="width:70px">
-						<h:outputText value="#{arq.rating_arquivo}" />
+						<h:outputText value="#{arq.rating}" />
 					</p:column>
 					<p:column headerText="Ações">
 						<p:commandButton icon="ui-icon-trash"
-							actionListener="#{arquivoBean.excluir}"
-							update=":msg">
+							actionListener="#{arquivoBean.excluir}" update=":msg">
 							<p:confirm header="Confirmação"
 								message="Deseja excluir este Arquivo?(Esta ação é irreversível!)"
 								icon="ui-icon-alert" />
 							<f:attribute name="arquivoExcluir" value="#{arq}" />
 						</p:commandButton>
 						<p:commandButton icon="ui-icon-pencil"
-							oncomplete="PF('formUp').show();"
-							actionListener="#{arquivoBean.alterar}"
-							update=":msg">
+							actionListener="#{arquivoBean.alterar}" update=":msg :frmUpload"
+							oncomplete="PF('formUp').show();">
 							<f:attribute name="arquivoAlterarar" value="#{arq}" />
 						</p:commandButton>
 					</p:column>
 				</p:dataTable>
-
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
 				<p:commandButton style="margin-top:5px; margin-left:85%"
 					value="Novo upload" actionListener="#{arquivoBean.novo}"
-					oncomplete="PF('formUp').show();" update=":frmUpload:telaUpload" />
+					oncomplete="PF('formUp').show();" update=":frmUpload" />
 			</p:tab>
 			<!-- TAB ALTERAR DADOS -->
 			<p:tab title="Alterar Dados" id="tabMudarDadosConta">
 				<h:panelGrid columns="2">
 					<h:outputText value="Login: " />
-					<p:inputText maxlength="20"
-						value="#{loginBean.usuario.login}" />
+					<p:inputText maxlength="20" value="#{loginBean.usuario.login}" />
 					<h:outputText value="Nick:  " />
-					<p:inputText maxlength="15"
-						value="#{loginBean.usuario.nick}" />
+					<p:inputText maxlength="15" value="#{loginBean.usuario.nick}" />
 					<h:outputText value="E-mail: " />
-					<p:inputText maxlength="50"
-						value="#{loginBean.usuario.email}" />
+					<p:inputText maxlength="50" value="#{loginBean.usuario.email}" />
 					<h:outputText value="Senha: " />
-					<p:inputText maxlength="20"
+					<p:password maxlength="20"
 						value="#{loginBean.usuario.senha_confirm}" />
 					<h:outputText value="Nova Senha (Opcional): " />
-					<p:inputText maxlength="20"
-						value="#{loginBean.usuario.nova_senha}" />
+					<p:password maxlength="20" value="#{loginBean.usuario.nova_senha}" />
 					<p:commandButton value="Alterar"
-						actionListener="#{usuarioBean.alterar}" update=":msg :frmMinhaConta:tabsConta">
+						actionListener="#{usuarioBean.alterar}"
+						update=":msg :frmMinhaConta:tabsConta">
 						<f:attribute name="usuarioAlterar" value="#{loginBean.usuario}" />
 					</p:commandButton>
 				</h:panelGrid>
@@ -115,6 +124,11 @@
 		resizable="false" draggable="false" modal="true" closable="true">
 
 		<h:form id="frmUpload" enctype="multipart/form-data">
+			<h:panelGrid columns="1">
+				<p:outputLabel value="Arquivo:" />
+				<p:fileUpload mode="advanced" skinSimple="false" id="fileUp"
+					fileUploadListener="#{arquivoBean.upload}" update=":frmUpload" />
+			</h:panelGrid>
 			<h:panelGrid columns="2" id="telaUpload">
 				<p:outputLabel value="Nome do arquivo" />
 				<p:inputText style="margin-left:5px; width:400px" size="20"
@@ -144,12 +158,38 @@
 				<h:outputText id="display" />
 			</h:panelGrid>
 			<h:panelGrid columns="2">
-				<p:outputLabel value="Arquivos:" />
-				<p:outputLabel value="" />
-				<p:fileUpload mode="advanced" skinSimple="false" id="fileUp"
-					fileUploadListener="#{arquivoBean.upload}" />
 				<p:commandButton value="Salvar"
-					actionListener="#{arquivoBean.salvar}" />
+					actionListener="#{arquivoBean.salvar}"
+					disabled="#{arquivoBean.disabled}" ajax="true"
+					oncomplete="PF('formUp').hide();" update=":frmMinhaConta" />
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+
+	<!-- TELA UPLOAD DE IMAGEM DA CONTA -->
+	<p:dialog header="Upload de imagem" widgetVar="imgUp" resizable="false"
+		draggable="false" modal="true" closable="true">
+		<h:form id="frmImgUp" enctype="multipart/form-data">
+			<p:fileUpload mode="advanced" skinSimple="false" id="imagemUp"
+				fileUploadListener="#{usuarioBean.upload}"
+				oncomplete="PF('imgUp').hide();" update="frmMinhaConta" />
+		</h:form>
+	</p:dialog>
+
+	<!-- TELA DE EXCLUSÃO DE CONTA -->
+	<p:dialog header="Insira seu login e senha"
+		widgetVar="frmExclusaoConta">
+		<h:form id="frmExcluirConta">
+			<h:panelGrid columns="2">
+				<p:outputLabel value="Login" for="login" />
+				<p:inputText value="#{loginBean.username}" id="login" />
+				<p:outputLabel value="Senha" for="senha" />
+				<p:password value="#{loginBean.password}" id="senha" />
+				<p:commandButton value="Excluir"
+					actionListener="#{loginBean.excluirConta}" action="index.xhtml"
+					ajax="false" />
+				<p:commandButton value="Cancelar"
+					oncomplete="PF('frmExclusaoConta').hide()" />
 			</h:panelGrid>
 		</h:form>
 	</p:dialog>

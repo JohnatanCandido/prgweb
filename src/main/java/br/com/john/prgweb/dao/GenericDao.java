@@ -10,8 +10,6 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 
-import br.com.john.prgweb.domain.Arquivo;
-import br.com.john.prgweb.domain.Usuario;
 import br.com.john.prgweb.util.HibernateUtil;
 
 
@@ -88,38 +86,6 @@ public class GenericDao <Entidade>{
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
-	public List<Entidade> buscarRating(Long codigo){
-		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
-		try {
-			Criteria consulta = sessao.createCriteria(classe);
-			consulta.add(Restrictions.eq("arquivo.codigo", codigo));
-			List<Entidade> resultado = consulta.list();
-			return resultado;
-		} catch (Exception e) {
-			throw e;
-		}finally{
-			sessao.close();
-		}
-	}
-	
-	@SuppressWarnings("unchecked")
-	public Entidade buscarRatingEspecifico(Usuario usuario, Arquivo arquivo){
-		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
-		try {
-			Criteria consulta = sessao.createCriteria(classe);
-			consulta.add(Restrictions.eq("usuario", usuario));
-			consulta.add(Restrictions.eq("arquivo", arquivo));
-			Entidade resultado = (Entidade)consulta.uniqueResult();
-			return resultado;
-		} catch (Exception e) {
-			throw e;
-		}finally{
-			sessao.close();
-		}
-	}
-
-	
 	public void excluir(Entidade entidade) {
 		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
 		Transaction t = null;
@@ -135,8 +101,6 @@ public class GenericDao <Entidade>{
 		}finally{
 			sessao.close();
 		}
-
-
 	}
 	
 	
@@ -158,20 +122,4 @@ public class GenericDao <Entidade>{
 			sessao.close();
 		}
 	}
-
-	@SuppressWarnings("unchecked")
-	public List<Entidade> buscarComentario(Long codigo){
-		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
-		try {
-			Criteria consulta = sessao.createCriteria(classe);
-			consulta.add(Restrictions.eq("arquivo.codigo", codigo));
-			List<Entidade> resultado = consulta.list();
-			return resultado;
-		} catch (Exception e) {
-			throw e;
-		}finally{
-			sessao.close();
-		}
-	}
-
 }

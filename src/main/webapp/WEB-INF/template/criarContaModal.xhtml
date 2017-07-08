@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Teste Arquivo</title>
+</h:head>
+<h:body>
+	<p:dialog header="Criar Conta" widgetVar="criarConta" resizable="false"
+		modal="true" width="40%">
+		<h:form id="frmCriarConta">
+			<h:panelGrid columns="1" cellpadding="5" width="100%" id="criaConta">
+			
+				<h:outputText value="Nome da conta" />
+				<p:inputText style="width:98%; margin-top:5px; margin-bottom:10px"
+					id="nome_conta" maxlength="20" value="#{usuarioBean.usuario.login}" >
+					<p:ajax event="blur" listener="#{usuarioBean.validaLogin}" update="msg"/>
+				</p:inputText>
+					
+				<h:outputText value="Nick" />
+				<p:inputText style="width:98%; margin-top:5px; margin-bottom:10px"
+					id="nick" maxlength="15" value="#{usuarioBean.usuario.nick}" >
+					<p:ajax event="blur" listener="#{usuarioBean.validaNick}" update="msg"/>
+				</p:inputText>
+
+				<h:outputText value="E-mail" />
+				<p:inputText style="width:98%; margin-top:5px; margin-bottom:10px"
+					id="email" maxlength="30" value="#{usuarioBean.usuario.email}" >
+					<p:ajax event="blur" listener="#{usuarioBean.validaEmail}" update="msg"/>
+				</p:inputText>
+
+				<h:outputText style="margin-top:50px" value="Senha" />
+				<p:password style="width:98%; margin-top:5px; margin-bottom:10px"
+					id="senha" maxlength="20" value="#{usuarioBean.usuario.senha}"
+					feedback="true" weakLabel="Fraca" goodLabel="Boa"
+					strongLabel="Legendary" promptLabel="Insira uma senha">
+					<p:ajax event="blur" listener="#{usuarioBean.validaCampos}" update="msg"/>
+				</p:password>
+
+				<p:commandButton value="Salvar"
+					actionListener="#{usuarioBean.salvar}" action="index.xhtml"
+					style="float:right; margin-left:10px"
+					onclick="PF('criarConta').hide();" ajax="false" />
+				<h:link outcome="/pages/index.xhtml" value="Cancelar"
+					style="float:right" />
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+</h:body>
+</html>

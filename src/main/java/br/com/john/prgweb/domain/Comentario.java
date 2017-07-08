@@ -24,7 +24,10 @@ public class Comentario extends GenericDomain{
 	private String comentario;
 	
 	@Transient
-	private Double rating_comentario;
+	private String rating_comentario;
+	
+	@Transient
+	private int meuRating;
 	
 //GETTERS E SETTERS DAS COLUNAS
 
@@ -52,12 +55,20 @@ public class Comentario extends GenericDomain{
 		this.comentario = comentario;
 	}
 
-	public Double getRating_comentario() {
+	public String getRating_comentario() {
 		return rating_comentario;
 	}
 
-	public void setRating_comentario(Double rating_comentario) {
+	public void setRating_comentario(String rating_comentario) {
 		this.rating_comentario = rating_comentario;
 	}
-	
+
+	public int getMeuRating() {
+		return meuRating;
+	}
+
+	public void setMeuRating(int meuRating) {
+		this.meuRating = meuRating;
+	}
+
 }
